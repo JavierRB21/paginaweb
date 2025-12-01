@@ -1,0 +1,159 @@
+<!-- templates/authentication/create_unit.html -->
+{% extends 'base.html' %}
+
+{% block title %}CompostIOT - Nueva Unidad{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h2>Crear Nueva Unidad de Compostaje</h2>
+    
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="form-container">
+        <form method="post" class="unit-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="{{ form.name.id_for_label }}">Nombre de la Unidad:</label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                <div class="form-errors">
+                    {% for error in form.name.errors %}
+                    <span class="error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.location.id_for_label }}">Ubicación:</label>
+                {{ form.location }}
+                {% if form.location.errors %}
+                <div class="form-errors">
+                    {% for error in form.location.errors %}
+                    <span class="error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.capacity.id_for_label }}">Capacidad (kg):</label>
+                {{ form.capacity }}
+                {% if form.capacity.errors %}
+                <div class="form-errors">
+                    {% for error in form.capacity.errors %}
+                    <span class="error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.description.id_for_label }}">Descripción (opcional):</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                <div class="form-errors">
+                    {% for error in form.description.errors %}
+                    <span class="error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Campo agregado para Tipo de Unidad -->
+            <div class="form-group">
+                <label for="{{ form.unit_type.id_for_label }}">Tipo de Unidad:</label>
+                {{ form.unit_type }}
+                {% if form.unit_type.errors %}
+                <div class="form-errors">
+                    {% for error in form.unit_type.errors %}
+                    <span class="error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Crear Unidad</button>
+                <a href="{% url 'manage_units' %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.form-container {
+    max-width: 600px;
+    margin: 20px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.unit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #2e7d32;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #4caf50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+.form-group textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.form-errors {
+    margin-top: 5px;
+}
+
+.error {
+    color: #d32f2f;
+    font-size: 14px;
+    display: block;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+</style>
+{% endblock %}

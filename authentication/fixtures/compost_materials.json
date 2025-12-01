@@ -1,0 +1,167 @@
+[
+  {
+    "model": "authentication.compostmaterial",
+    "pk": 1,
+    "fields": {
+      "name": "Restos de frutas",
+      "material_type": "green",
+      "carbon_nitrogen_ratio": "12.00",
+      "description": "Cáscaras y restos de frutas frescas. Rico en nitrógeno y nutrientes.",
+      "is_recommended": true
+    }
+  },
+  {
+    "model": "authentication.compostmaterial",
+    "pk": 2,
+    "fields": {
+      "name": "Restos de verduras",
+      "material_type": "green",
+      "carbon_nitrogen_ratio": "15.00",
+      "description": "Hojas, tallos y restos de verduras. Excelente fuente de nitrógeno.",
+      "is_recommended": true
+    }
+  },
+  {
+    "model": "authentication.compostmaterial",
+    "pk": 3,
+    "fields": {
+      "name": "Césped cortado",
+      "material_type": "green",
+      "carbon_nitrogen_ratio": "17.00",
+      "description": "Pasto recién cortado. Debe mezclarse bien con material marrón.",
+      "is_recommended": true
+    }
+  },
+  {
+    "model": "authentication.compostmaterial",
+    "pk": 4,
+    "fields": {
+      "name": "Borra de café",
+      "material_type": "green",
+      "carbon_nitrogen_ratio": "20.00",
+      "description": "Residuos de café molido. Incluir filtros de papel si son biodegradables.",
+      "is_recommended": true
+    }
+  },
+  {
+    "model": "authentication.compostmaterial",
+    "pk": 5,
+    "fields": {
+      "name": "Cáscaras de huevo",
+      "material_type": "green",
+      "carbon_nitrogen_ratio": "25.00",
+      "description": "Trituradas finamente. Aportan calcio al compost.",
+      "is_recommended": true
+    }
+  },
+  {
+    "model": "authentication.compostmaterial",
+    "pk": 6,
+    "fields": {
+      "name": "Hojas secas",
+      "material_type": "brown",
+      "carbon_nitrogen_ratio": "60.00",
+      "description": "Hojas caídas y secas. Excelente fuente de carbono.",
+      "is_recommended": true
+    }
+  },
+  {
+    "model": "authentication.compostmaterial",
+    "pk": 7,
+    "fields": {
+      "name": "Papel periódico",
+      "material_type": "brown",
+      "carbon_nitrogen_ratio": "175.00",
+      "description": "Papel periódico triturado. Evitar páginas con mucha tinta de colores.",
+      "is_recommended": true
+    }
+  },
+  {
+    "model": "authentication.compostmaterial",
+    "pk": 8,
+    "fields": {
+      "name": "Cartón",
+      "material_type": "brown",
+      "carbon_nitrogen_ratio": "350.00",
+      "description": "Cartón corrugado triturado. Remover cintas y grapas.",
+      "is_recommended": true
+    }
+  },
+  {
+    "model": "authentication.compostmaterial",
+    "pk": 9,
+    "fields": {
+      "name": "Aserrín",
+      "material_type": "brown",
+      "carbon_nitrogen_ratio": "200.00",
+      "description": "Aserrín de madera sin tratar. Usar en pequeñas cantidades.",
+      "is_recommended": true
+    }
+  },
+  {
+    "model": "authentication.compostmaterial",
+    "pk": 10,
+    "fields": {
+      "name": "Ramas pequeñas",
+      "material_type": "brown",
+      "carbon_nitrogen_ratio": "100.00",
+      "description": "Ramas y palitos triturados. Mejoran la aireación del compost.",
+      "is_recommended": true
+    }
+  },
+  {
+    "model": "authentication.compostmaterial",
+    "pk": 11,
+    "fields": {
+      "name": "Carne",
+      "material_type": "other",
+      "carbon_nitrogen_ratio": "5.00",
+      "description": "No recomendado para compostaje doméstico. Atrae plagas y genera malos olores.",
+      "is_recommended": false
+    }
+  },
+  {
+    "model": "authentication.compostmaterial",
+    "pk": 12,
+    "fields": {
+      "name": "Lácteos",
+      "material_type": "other",
+      "carbon_nitrogen_ratio": "8.00",
+      "description": "No recomendado para compostaje doméstico. Puede generar olores desagradables.",
+      "is_recommended": false
+    }
+  },
+  {
+    "model": "authentication.compostmaterial",
+    "pk": 13,
+    "fields": {
+      "name": "Aceites y grasas",
+      "material_type": "other",
+      "carbon_nitrogen_ratio": "30.00",
+      "description": "Evitar en compostaje doméstico. Dificulta la descomposición y atrae plagas.",
+      "is_recommended": false
+    }
+  },
+  {
+    "model": "authentication.compostmaterial",
+    "pk": 14,
+    "fields": {
+      "name": "Estiércol de herbívoros",
+      "material_type": "green",
+      "carbon_nitrogen_ratio": "25.00",
+      "description": "De vacas, caballos, cabras. Debe estar bien compostado antes de usar.",
+      "is_recommended": true
+    }
+  },
+  {
+    "model": "authentication.compostmaterial",
+    "pk": 15,
+    "fields": {
+      "name": "Algas marinas",
+      "material_type": "green",
+      "carbon_nitrogen_ratio": "19.00",
+      "description": "Ricas en minerales. Lavar para eliminar exceso de sal antes de usar.",
+      "is_recommended": true
+    }
+  }
+]

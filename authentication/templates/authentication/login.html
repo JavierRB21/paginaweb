@@ -1,0 +1,213 @@
+<!-- templates/authentication/login.html -->
+{% extends 'base.html' %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'authentication/css/login.css' %}">
+{% block title %}CompostIOT - Iniciar Sesión{% endblock %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&display=swap" rel="stylesheet">
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="login-logo">
+                <img src="{% static 'authentication/images/io.jpg' %}" class="centered-logo">
+            </div>
+        <div class="auth-header">
+             <p class="lema">Tecnología que nutre la tierra</p>
+            <h2>Iniciar Sesión</h2>
+        </div>
+        
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">
+                    <i class="fas fa-user"></i> Usuario
+                </label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                <div class="form-errors">
+                    {% for error in form.username.errors %}
+                    <span class="error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">
+                    <i class="fas fa-lock"></i> Contraseña
+                </label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                <div class="form-errors">
+                    {% for error in form.password.errors %}
+                    <span class="error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-full">
+                <i class="fas fa-sign-in-alt"></i> Ingresar
+            </button>
+        </form>
+        
+        <div class="auth-footer">
+            <p>¿No tienes cuenta? <a href="{% url 'register' %}">Regístrate aquí</a></p>
+        </div>
+    </div>
+</div>
+
+<style>
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 20px;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.auth-icon {
+    font-size: 3rem;
+    color: #4caf50;
+    margin-bottom: 15px;
+}
+
+.auth-header h2 {
+    color: #2e7d32;
+    margin-bottom: 8px;
+}
+
+.auth-header p {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.auth-form {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    color: #2e7d32;
+    margin-bottom: 8px;
+}
+
+.form-group label i {
+    margin-right: 8px;
+    width: 16px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #4caf50;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.2);
+}
+
+.btn-full {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.auth-footer {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.auth-footer a {
+    color: #4caf50;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+.form-errors {
+    margin-top: 5px;
+}
+
+.error {
+    color: #d32f2f;
+    font-size: 14px;
+    display: block;
+}
+.lema {
+    font-family: 'Raleway', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #4caf50, #81c784, #388e3c);
+    -webkit-background-clip: text;
+    background-clip: text; 
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    margin: 10px 0;
+    letter-spacing: 2px;
+    text-shadow: 0 0 5px rgba(72, 180, 97, 0.7);
+    animation: glow 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    0% {
+        text-shadow: 0 0 5px rgba(72, 180, 97, 0.7);
+    }
+    100% {
+        text-shadow: 0 0 20px rgba(72, 180, 97, 1), 0 0 30px rgba(129, 199, 132, 0.8);
+    }
+}
+
+</style>
+
+<style>
+.centered-logo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 160px; /* Ajusta el tamaño según necesites */
+}
+</style>
+
+{% endblock %}

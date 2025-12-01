@@ -1,0 +1,153 @@
+<!-- templates/authentication/manage_units.html -->
+{% extends 'base.html' %}
+
+{% block title %}CompostIOT - Gestionar Unidades{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="header-actions">
+        <h2>Gestionar Unidades de Compostaje</h2>
+        <a href="{% url 'create_unit' %}" class="btn btn-primary">+ Nueva Unidad</a>
+    </div>
+    
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <p>Total de unidades: <strong>{{ total_units }}</strong></p>
+    
+    {% if page_obj %}
+    <div class="units-table">
+        {% for unit in page_obj %}
+        <div class="unit-row">
+            <div class="unit-info">
+                <h3>{{ unit.name }}</h3>
+                <p><strong>Ubicación:</strong> {{ unit.location }}</p>
+                <p><strong>Capacidad:</strong> {{ unit.capacity }} kg</p>
+                <p><strong>Estado:</strong> 
+                    <span class="status status-{{ unit.status }}">{{ unit.get_status_display }}</span>
+                </p>
+                <p><strong>Creada:</strong> {{ unit.created_at|date:"d/m/Y" }}</p>
+                {% if unit.get_latest_reading %}
+                <p><strong>Fase actual:</strong> {{ unit.get_compost_phase }}</p>
+                {% endif %}
+            </div>
+            <div class="unit-actions">
+                <a href="{% url 'unit_detail' unit.id %}" class="btn btn-info">Ver Detalles</a>
+                <a href="{% url 'delete_unit' unit.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-units">
+            <p>No tienes unidades de compostaje aún.</p>
+            <a href="{% url 'create_unit' %}" class="btn btn-primary">Crear Primera Unidad</a>
+            <a href="{% url 'create_demo_data' %}" class="btn btn-secondary">Crear Datos de Demostración</a>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Paginación -->
+    {% if page_obj.has_other_pages %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">&laquo; Anterior</a>
+        {% endif %}
+        
+        <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+        
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Siguiente &raquo;</a>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% endif %}
+    
+    <div class="back-actions">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Volver al Menu</a>
+    </div>
+</div>
+
+<style>
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.units-table {
+    margin: 20px 0;
+}
+
+.unit-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.unit-info h3 {
+    margin: 0 0 10px 0;
+    color: #2e7d32;
+}
+
+.unit-info p {
+    margin: 5px 0;
+}
+
+.unit-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.status {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.status-active { background: #d4edda; color: #155724; }
+.status-maintenance { background: #fff3cd; color: #856404; }
+.status-inactive { background: #f8d7da; color: #721c24; }
+
+.no-units {
+    text-align: center;
+    padding: 40px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.pagination {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.pagination a {
+    display: inline-block;
+    margin: 0 10px;
+    padding: 8px 12px;
+    background: #2e7d32;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 0.9em;
+}
+</style>
+{% endblock %}

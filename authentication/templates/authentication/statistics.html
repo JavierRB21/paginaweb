@@ -1,0 +1,428 @@
+<!-- templates/authentication/statistics.html -->
+{% extends 'base.html' %}
+
+{% block title %}CompostIOT - Estadísticas{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h2>Estadísticas de Compostaje</h2>
+    
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- Resumen general -->
+    <div class="stats-summary">
+        <div class="summary-card">
+            <h3>{{ total_readings }}</h3>
+            <p>Lecturas Totales</p>
+        </div>
+        <div class="summary-card">
+            <h3>{{ unit_stats|length }}</h3>
+            <p>Unidades Activas</p>
+        </div>
+    </div>
+    
+    <!-- Botón para descargar todas las gráficas -->
+    <div style="margin-bottom: 20px;">
+        <button onclick="downloadChartsAsPDF()" class="btn btn-primary">
+            Descargar todas las gráficas en PDF
+        </button>
+    </div>
+    
+    <!-- Gráficas principales -->
+    <div class="charts-container">
+        <div class="chart-section">
+            <h3>Temperatura vs Tiempo (Últimas 100 lecturas)</h3>
+            <canvas id="temperatureChart"></canvas>
+        </div>
+        
+        <div class="chart-section">
+            <h3>pH vs Tiempo</h3>
+            <canvas id="phChart"></canvas>
+        </div>
+        
+        <div class="chart-section">
+            <h3>Humedad y Oxígeno</h3>
+            <canvas id="humidityOxygenChart"></canvas>
+        </div>
+       
+        <div class="chart-section">
+            <h3>Materiales Recomendados y su Relación C/N</h3>
+            <canvas id="materialesChart"></canvas>
+        </div>
+    <!-- Estadísticas por unidad -->
+    {% if unit_stats %}
+    <div class="unit-stats">
+        <h3>Estadísticas por Unidad</h3>
+        <div class="stats-grid">
+            {% for stat in unit_stats %}
+            <div class="stat-unit-card">
+                <h4>{{ stat.unit.name }}</h4>
+                <div class="stat-values">
+                    <div class="stat-value">
+                        <span class="label">Temp. Promedio:</span>
+                        <span class="value">{{ stat.avg_temp|floatformat:1 }}°C</span>
+                    </div>
+                    <div class="stat-value">
+                        <span class="label">pH Promedio:</span>
+                        <span class="value">{{ stat.avg_ph|floatformat:1 }}</span>
+                    </div>
+                    <div class="stat-value">
+                        <span class="label">Humedad Promedio:</span>
+                        <span class="value">{{ stat.avg_humidity|floatformat:1 }}%</span>
+                    </div>
+                    <div class="stat-value">
+                        <span class="label">Oxígeno Promedio:</span>
+                        <span class="value">{{ stat.avg_oxygen|floatformat:1 }}%</span>
+                    </div>
+                    <div class="stat-value">
+                        <span class="label">Total Lecturas:</span>
+                        <span class="value">{{ stat.count }}</span>
+                    </div>
+                    {% if stat.latest %}
+                    <div class="stat-value">
+                        <span class="label">Última Lectura:</span>
+                        <span class="value">{{ stat.latest.timestamp|date:"d/m H:i" }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="back-actions">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Volver al Menu</a>  
+    </div>
+</div>
+
+{{ temp_labels|json_script:"temp-labels" }}
+{{ temp_data|json_script:"temp-data" }}
+
+{{ ph_labels|json_script:"ph-labels" }}
+{{ ph_data|json_script:"ph-data" }}
+
+{{ humidity_labels|json_script:"humidity-labels" }}
+{{ humidity_data|json_script:"humidity-data" }}
+
+{{ oxygen_data|json_script:"oxygen-data" }}
+{{ labels_materiales|json_script:"labels-materiales" }}
+{{ data_materiales|json_script:"data-materiales" }}
+
+<!-- Librerías externas para html2canvas y jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- Script para las gráficas -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// Leer los datos del DOM
+const tempLabels = JSON.parse(document.getElementById('temp-labels').textContent);
+const tempData = JSON.parse(document.getElementById('temp-data').textContent);
+
+const phLabels = JSON.parse(document.getElementById('ph-labels').textContent);
+const phData = JSON.parse(document.getElementById('ph-data').textContent);
+
+const humidityLabels = JSON.parse(document.getElementById('humidity-labels').textContent);
+const humidityData = JSON.parse(document.getElementById('humidity-data').textContent);
+
+const oxygenData = JSON.parse(document.getElementById('oxygen-data').textContent);
+
+const labelsMateriales = JSON.parse(document.getElementById('labels-materiales').textContent);
+const dataMateriales = JSON.parse(document.getElementById('data-materiales').textContent);
+
+// Configuración de colores
+const colors = {
+    temperature: '#ff6384',
+    ph: '#36a2eb', 
+    humidity: '#4bc0c0',
+    oxygen: '#ffcd56'
+};
+
+// Gráfica de Temperatura
+const tempCtx = document.getElementById('temperatureChart').getContext('2d');
+const temperatureChart = new Chart(tempCtx, {
+    type: 'line',
+    data: {
+        labels: tempLabels,
+        datasets: [{
+            label: 'Temperatura (°C)',
+            data: tempData,
+            borderColor: colors.temperature,
+            backgroundColor: colors.temperature + '20',
+            tension: 0.4
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: false
+            }
+        }
+    }
+});
+
+// Gráfica de pH
+const phCtx = document.getElementById('phChart').getContext('2d');
+const phChart = new Chart(phCtx, {
+    type: 'line',
+    data: {
+        labels: phLabels,
+        datasets: [{
+            label: 'pH',
+            data: phData,
+            borderColor: colors.ph,
+            backgroundColor: colors.ph + '20',
+            tension: 0.4
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                min: 0,
+                max: 14
+            }
+        }
+    }
+});
+
+// Gráfica de Humedad y Oxígeno
+const humOxyCtx = document.getElementById('humidityOxygenChart').getContext('2d');
+const humidityOxygenChart = new Chart(humOxyCtx, {
+    type: 'line',
+    data: {
+        labels: humidityLabels,
+        datasets: [{
+            label: 'Humedad (%)',
+            data: humidityData,
+            borderColor: colors.humidity,
+            backgroundColor: colors.humidity + '20',
+            yAxisID: 'y'
+        }, {
+            label: 'Oxígeno (%)',
+            data: oxygenData,
+            borderColor: colors.oxygen,
+            backgroundColor: colors.oxygen + '20',
+            yAxisID: 'y1'
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                type: 'linear',
+                display: true,
+                position: 'left',
+                max: 100
+            },
+            y1: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                max: 100,
+                grid: {
+                    drawOnChartArea: false
+                }
+            }
+        }
+    }
+});
+
+// Gráfica Materiales
+const materialesCtx = document.getElementById('materialesChart').getContext('2d');
+const materialesChart = new Chart(materialesCtx, {
+    type: 'bar',
+    data: {
+        labels: labelsMateriales,
+        datasets: [{
+            label: 'Relación C/N',
+            data: dataMateriales,
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Relación C/N'
+                }
+            }
+        }
+    }
+});
+
+// Función para descargar todas las gráficas en PDF con página por gráfica
+async function downloadChartsAsPDF() {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('landscape');
+    
+    // IDs y títulos de las gráficas
+    const charts = [
+        {id: 'temperatureChart', title: 'Temperatura vs Tiempo'},
+        {id: 'phChart', title: 'pH vs Tiempo'},
+        {id: 'humidityOxygenChart', title: 'Humedad y Oxígeno'},
+        {id: 'materialesChart', title: 'Material'}
+    ];
+
+    for (let i = 0; i < charts.length; i++) {
+        const { id, title } = charts[i];
+        const canvas = document.getElementById(id);
+        
+        // Captura canvas a imagen
+        const canvasImage = await html2canvas(canvas, {scale: 3, backgroundColor: '#ffffff', useCORS: true});
+        const imgData = canvasImage.toDataURL('image/png');
+        
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        
+        // Escalar imagen para ocupar la página con márgenes
+        const imgProps = {
+            width: canvasImage.width,
+            height: canvasImage.height
+        };
+        const ratio = Math.min((pdfWidth - 40) / imgProps.width, (pdfHeight - 40) / imgProps.height);
+        const imgWidth = imgProps.width * ratio;
+        const imgHeight = imgProps.height * ratio;
+
+        if (i > 0) {
+            pdf.addPage();
+        }
+
+        // Título centrado
+        pdf.setFontSize(16);
+        pdf.text(title, pdfWidth / 2, 20, { align: 'center' });
+
+        // Imagen debajo del título
+        pdf.addImage(imgData, 'PNG', (pdfWidth - imgWidth) / 2, 30, imgWidth, imgHeight);
+    }
+
+    pdf.save('graficas_compost_iot.pdf');
+}
+</script>
+
+<style>
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.stats-summary {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.summary-card {
+    background-color: #f5f5f5;
+    padding: 15px 25px;
+    border-radius: 8px;
+    flex: 1;
+    text-align: center;
+}
+
+/* Grid de gráficas: 2 columnas por defecto */
+.charts-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.chart-section {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Asegura que el canvas ocupe el ancho del contenedor */
+.chart-section canvas {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 480px; /* evita canvases excesivamente altos en escritorio */
+}
+
+.unit-stats {
+    margin-top: 40px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.stat-unit-card {
+    background-color: #fafafa;
+    padding: 15px;
+    border-radius: 6px;
+    box-shadow: 0 0 6px rgba(0,0,0,0.05);
+}
+
+.stat-values {
+    margin-top: 10px;
+}
+
+.stat-value {
+    margin-bottom: 6px;
+}
+
+.label {
+    font-weight: bold;
+}
+
+.back-actions {
+    margin-top: 30px;
+    text-align: center;
+}
+
+/* --- Responsividad: una columna vertical en pantallas pequeñas --- */
+@media (max-width: 900px) {
+    .charts-container {
+        grid-template-columns: 1fr; /* una columna */
+        gap: 20px;
+    }
+
+    .stats-summary {
+        flex-direction: column;
+    }
+
+    .summary-card {
+        width: 100%;
+    }
+
+    .chart-section {
+        padding: 12px;
+    }
+
+    .dashboard-container {
+        padding: 12px;
+    }
+}
+
+/* Ajustes para móviles muy pequeños */
+@media (max-width: 480px) {
+    .chart-section canvas {
+        max-height: 380px;
+    }
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,381 @@
+{% extends 'base.html' %}
+
+{% block title %}CompostIOT - Registro{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div id="ajax-error" class="alert alert-danger" style="display:none;"></div>
+
+            <i class="fas fa-user-plus auth-icon"></i>
+            <h2>Crear Cuenta</h2>
+            <p>Únete al sistema inteligente de monitoreo de compostaje</p>
+        </div>
+
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form id="register-form" method="post" class="auth-form" novalidate>
+            {% csrf_token %}
+
+            <div class="form-row">
+                <div class="form-group half">
+                    <label><i class="fas fa-user"></i> Nombre</label>
+                    {{ form.first_name }}
+                </div>
+
+                <div class="form-group half">
+                    <label><i class="fas fa-user"></i> Apellido</label>
+                    {{ form.last_name }}
+                </div>
+            </div>
+
+            <div class="form-group">
+    <label><i class="fas fa-at"></i> Nombre de Usuario</label>
+    {{ form.username }}
+    <p id="msg-username" style="color:red; font-size:14px; margin-top:5px;"></p>
+</div>
+
+
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Email</label>
+                {{ form.email }}
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-building"></i> Organización (Opcional)</label>
+                {{ form.organization }}
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-phone"></i> Teléfono (Opcional)</label>
+                {{ form.phone }}
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> Contraseña</label>
+                {{ form.password1 }}
+                <small id="msg-password" style="color: red;"></small>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> Confirmar Contraseña</label>
+                {{ form.password2 }}
+            </div>
+
+            <button id="submit-btn" type="submit" class="btn-submit">
+                <i class="fas fa-user-plus"></i> Crear Cuenta
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a></p>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function () {
+
+    const $username = $("#id_username");
+    const $msg = $("#msg-username");
+    const $form = $("#register-form");
+    const $password = $("#id_password1");
+
+    function validarUsername() {
+        const val = $username.val().trim();
+
+        if (val.length < 3) {
+            $msg.text("El usuario debe tener al menos 3 caracteres");
+            return false;
+        } else {
+            $msg.text("");
+            return true;
+        }
+    }
+
+    // Validación mientras escribe
+    $username.on("keyup input", function () {
+        validarUsername();
+    });
+
+    // Validación al intentar enviar el formulario
+    $form.on("submit", function (e) {
+        if (!validarUsername()) {
+            e.preventDefault();    
+            $username.focus();
+        }
+    });
+    $("#id_password1").on("keyup", function(){
+        if ($(this).val().length < 8) {
+            $("#msg-password").text("La contraseña debe tener al menos 8 caracteres");
+        } else {
+            $("#msg-password").text("");
+        }
+    });
+
+});
+</script>
+
+<style>
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+    background: linear-gradient(to bottom right, #e0f7e9, #c8e6c9);
+    min-height: 100vh;
+}
+
+.auth-card {
+    background-color: white;
+    padding: 40px;
+    max-width: 500px;
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.auth-header .auth-icon {
+    font-size: 48px;
+    color: #43a047;
+    margin-bottom: 10px;
+}
+
+.auth-header h2 {
+    margin: 0;
+    font-size: 28px;
+    color: #2e7d32;
+}
+
+.auth-header p {
+    color: #666;
+    font-size: 14px;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #2e7d32;
+}
+
+.form-group input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    transition: border 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #66bb6a;
+    box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.2);
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 12px;
+    background-color: #43a047;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-submit:hover {
+    background-color: #388e3c;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.auth-footer a {
+    color: #388e3c;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+.alert {
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.alert-success {
+    background-color: #dcedc8;
+    color: #33691e;
+}
+
+.alert-error,
+.alert-danger {
+    background-color: #ffcdd2;
+    color: #b71c1c;
+}
+
+@media (max-width: 600px) {
+    .form-row {
+        flex-direction: column;
+    }
+
+    .auth-card {
+        padding: 30px 20px;
+    }
+}
+</style>
+
+<!-- SweetAlert2 (para alertas agradables) -->
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('register-form');
+    const ajaxError = document.getElementById('ajax-error');
+    const submitBtn = document.getElementById('submit-btn');
+
+    function showInlineErrors(html) {
+        ajaxError.innerHTML = html;
+        ajaxError.style.display = 'block';
+        ajaxError.scrollIntoView({behavior: 'smooth', block: 'center'});
+    }
+    function clearInlineErrors() {
+        ajaxError.innerHTML = '';
+        ajaxError.style.display = 'none';
+    }
+
+    function clientValidate(data) {
+        // Validaciones básicas antes de enviar
+        const errors = [];
+        const username = (data.get('username') || '').trim();
+        const first_name = (data.get('first_name') || '').trim();
+        const last_name = (data.get('last_name') || '').trim();
+        const email = (data.get('email') || '').trim();
+        const password1 = data.get('password1') || '';
+        const password2 = data.get('password2') || '';
+
+        if (!username) errors.push('El nombre de usuario es requerido.');
+        if (!first_name) errors.push('El nombre es requerido.');
+        if (!last_name) errors.push('El apellido es requerido.');
+        if (!email) errors.push('El correo es requerido.');
+        // validación simple de email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (email && !emailRegex.test(email)) errors.push('El correo no tiene un formato válido.');
+        if (!password1 || !password2) errors.push('Ambas contraseñas son requeridas.');
+        if (password1 && password1.length < 8) errors.push('La contraseña debe tener al menos 8 caracteres.');
+        if (password1 !== password2) errors.push('Las contraseñas no coinciden.');
+
+        return errors;
+    }
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        clearInlineErrors();
+        const formData = new FormData(form);
+        // Validación cliente
+        const clientErrors = clientValidate(formData);
+        if (clientErrors.length) {
+            const html = '<ul>' + clientErrors.map(it => `<li>${it}</li>`).join('') + '</ul>';
+            showInlineErrors(html);
+            Swal.fire({ icon: 'error', title: 'Errores en el formulario', html });
+            return;
+        }
+        // Envío AJAX
+        submitBtn.disabled = true;
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = 'Enviando...';
+        try {
+            const resp = await fetch(form.action || window.location.href, {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                body: formData,
+                credentials: 'same-origin'
+            });
+
+            const contentType = resp.headers.get('Content-Type') || '';
+            if (contentType.includes('application/json')) {
+                const data = await resp.json();
+                if (resp.ok) {
+                    // éxito: el servidor puede devolver { redirect: '...' } o mensaje
+                    if (data.redirect) {
+                        window.location = data.redirect;
+                        return;
+                    }
+                    Swal.fire({ icon: 'success', title: 'Cuenta creada', text: data.message || 'Registro exitoso' })
+                        .then(() => { window.location.reload(); });
+                    return;
+                } else {
+                    // mostrar errores recibidos del servidor
+                    const errors = data.errors || data;
+                    let html = '';
+                    if (Array.isArray(errors)) {
+                        html = '<ul>' + errors.map(m => `<li>${m}</li>`).join('') + '</ul>';
+                    } else if (typeof errors === 'object') {
+                        html = '<ul>';
+                        for (const [field, msgs] of Object.entries(errors)) {
+                            const joined = Array.isArray(msgs) ? msgs.join(' ') : msgs;
+                            html += `<li><strong>${field}:</strong> ${joined}</li>`;
+                        }
+                        html += '</ul>';
+                    } else {
+                        html = `<p>${String(errors)}</p>`;
+                    }
+                    showInlineErrors(html);
+                    Swal.fire({ icon: 'error', title: 'Errores del servidor', html });
+                }
+            } else {
+                // respuesta HTML: si es ok recargar, si no mostrar genérico
+                if (resp.ok) {
+                    window.location.reload();
+                } else {
+                    const text = await resp.text();
+                    showInlineErrors('Ocurrió un error en el servidor. Intenta de nuevo.');
+                    console.error('Respuesta no JSON:', text);
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Error en la respuesta del servidor.' });
+                }
+            }
+        } catch (err) {
+            console.error(err);
+            showInlineErrors('Error de red. Intenta nuevamente.');
+            Swal.fire({ icon: 'error', title: 'Error de red', text: 'No se pudo conectar al servidor.' });
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Bienvenido a Compost-IoT{% endblock %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Montserrat&display=swap" rel="stylesheet">
+<div class="welcome-screen">
+    <h1>🌱 Bienvenido </h1>
+    <p>Una solución inteligente para nutrir la tierra.</p>
+    <a href="{% url 'dashboard' %}" class="btn">Entrar al Menu</a>
+</div>
+<style>
+.welcome-screen {
+    background: linear-gradient(135deg, #e8f5e9, #a5d6a7);
+    padding: 80px 30px;
+    text-align: center;
+    border-radius: 20px;
+    max-width: 700px;
+    margin: 60px auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 1s ease-in-out;
+}
+
+.welcome-screen h1 {
+    font-family: 'Raleway', sans-serif;
+    font-size: 48px;
+    color: #2e7d32;
+    margin-bottom: 20px;
+    animation: popIn 1s ease;
+}
+
+.welcome-screen p {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    color: #424242;
+    margin-bottom: 40px;
+}
+
+.welcome-screen .btn {
+    background: #388e3c;
+    border: none;
+    padding: 14px 30px;
+    font-size: 18px;
+    border-radius: 50px;
+    font-weight: bold;
+    color: white;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.welcome-screen .btn:hover {
+    background: #2e7d32;
+    transform: scale(1.05);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+</style>
+
+
+{% endblock %}

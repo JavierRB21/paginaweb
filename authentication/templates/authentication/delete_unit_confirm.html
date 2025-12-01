@@ -1,0 +1,122 @@
+<!-- templates/authentication/delete_unit_confirm.html -->
+{% extends 'base.html' %}
+
+{% block title %}CompostIOT - Eliminar Unidad{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="confirm-delete">
+        <div class="warning-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        
+        <h2>Confirmar Eliminación</h2>
+        
+        <div class="unit-to-delete">
+            <h3>{{ unit.name }}</h3>
+            <p><strong>Ubicación:</strong> {{ unit.location }}</p>
+            <p><strong>Capacidad:</strong> {{ unit.capacity }} kg</p>
+            <p><strong>Creada:</strong> {{ unit.created_at|date:"d/m/Y" }}</p>
+        </div>
+        
+        <div class="warning-message">
+            <p><strong>¡Atención!</strong> Esta acción no se puede deshacer.</p>
+            <p>Se eliminarán permanentemente:</p>
+            <ul>
+                <li>La unidad de compostaje</li>
+                <li>Todas las lecturas de sensores asociadas</li>
+                <li>Todo el historial de datos</li>
+            </ul>
+        </div>
+        
+        <form method="post" class="delete-form">
+            {% csrf_token %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Sí, Eliminar Unidad
+                </button>
+                <a href="{% url 'unit_detail' unit.id %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.confirm-delete {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.warning-icon {
+    font-size: 4rem;
+    color: #ff9800;
+    margin-bottom: 20px;
+}
+
+.confirm-delete h2 {
+    color: #d32f2f;
+    margin-bottom: 30px;
+}
+
+.unit-to-delete {
+    background: #f8f9fa;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.unit-to-delete h3 {
+    color: #2e7d32;
+    margin-bottom: 10px;
+}
+
+.warning-message {
+    background: #fff3cd;
+    border: 1px solid #ffeaa0;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.warning-message p {
+    margin-bottom: 10px;
+}
+
+.warning-message ul {
+    margin-left: 20px;
+}
+
+.warning-message li {
+    margin-bottom: 5px;
+}
+
+.delete-form {
+    margin-top: 30px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+@media (max-width: 600px) {
+    .form-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .form-actions .btn {
+        width: 100%;
+        max-width: 250px;
+    }
+}
+</style>
+{% endblock %}
+            
